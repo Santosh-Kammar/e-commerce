@@ -16,11 +16,9 @@ export default function Login() {
         username,
         password,
       });
-      console.log("Response Data:", response.data);
 
       if (response.data.accessToken) {
         alert("Login successful!");
-        console.log("User Data:", response.data);
 
         localStorage.setItem("token", response.data.accessToken);
 

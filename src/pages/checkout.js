@@ -11,6 +11,9 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("Credit Card");
   const [price, setPrice] = useState("");
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [quantity, setQuantity] = useState();
+  const [emailError, setEmailError] = useState();
 
   useEffect(() => {
     if (query.fullname) setCustomerName(query.fullname);
@@ -19,9 +22,26 @@ export default function Checkout() {
     if (query.price) setPrice(query.price);
   }, [query]);
 
+  const closeModal = () => {
+    setShowModal(false);
+    router.push("/products");
+  };
+
+  const validateEmail = (email) => {
+    const emailRegx = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegx.test(email);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowPaymentDetails(true);
+
+    if (!validateEmail(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    } else {
+      setEmailError("");
+    }
 
     router.push({
       pathname: "/payment",
@@ -30,14 +50,21 @@ export default function Checkout() {
         email: email,
         address: address,
         price: price,
+        quantity: quantity,
         paymentMethod: paymentMethod,
       },
     });
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10 relative">
       <h2 className="text-2xl font-bold mb-4 text-green-600">Checkout</h2>
+      <button
+        className="absolute top-4 right-4 bg-teal-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors "
+        onClick={closeModal}
+      >
+        Cancel
+      </button>
 
       <div className="flex items-center gap-4">
         <img
@@ -77,6 +104,10 @@ export default function Checkout() {
           className="w-full p-2 border rounded mt-1 text-black"
         />
 
+        {emailError && (
+          <p className="text-red-500 text-sm mt-1">{emailError}</p>
+        )}
+
         <label className="block font-semibold text-black mt-3">Address :</label>
         <input
           type="text"
@@ -109,16 +140,16 @@ export default function Checkout() {
       </form>
 
       {showPaymentDetails && (
-        <div className="mt-6 p-4 border rounded bg-gray-100">
+        <div className="mt-6 p-6 border rounded bg-gray-100">
           <h3 className="text-xl font-bold text-black">Payment Details</h3>
           {paymentMethod === "Credit Card" && (
             <p className="text-gray-700">
-              Please enter your credit card details on the next page.
+              Please enter your card details on the next page.
             </p>
           )}
           {paymentMethod === "PayPal" && (
             <p className="text-gray-700">
-              You will be redirected to PayPal to complete your payment.
+              You will be redirected to PayPal to complete your payment
             </p>
           )}
           {paymentMethod === "Cash on Delivery" && (

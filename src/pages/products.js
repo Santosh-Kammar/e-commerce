@@ -3,6 +3,7 @@ import { fetchCategories, fetchProducts } from "../store/slices/productSlice";
 import Header from "@/components/header";
 import ProductCard from "@/components/ProductCart";
 import { useDispatch, useSelector } from "react-redux";
+import Footer from "@/components/footer";
 
 export default function Products() {
   const dispatch = useDispatch();
@@ -11,17 +12,16 @@ export default function Products() {
   const { categories, products, totalProducts, loading } = useSelector(
     (state) => state.products
   );
+  console.log("@@@@", products);
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState("default");
   const itemsPerPage = 30;
 
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
-  console.log("TCL: Products -> [dispatch]", [dispatch]);
-
-  console.log("Categories state:", categories);
 
   useEffect(() => {
     dispatch(
@@ -32,11 +32,24 @@ export default function Products() {
       })
     );
   }, [dispatch, selectedCategory, currentPage]);
+
+  const handleSortChange = (event) => {
+    setSortOrder(event.target.value);
+  };
+
+  const sortedProducts = [...products].sort((a, b) => {
+    if (sortOrder === "lowToHigh") {
+      return a.price - b.price;
+    } else if (sortOrder === "highToLow") {
+      return b.price - a.price;
+    }
+    return 0;
+  });
+
   const handleCategoryChange = (category) => {
     setSelectedCategory(category.slug);
     setCurrentPage(1);
   };
-  console.log("@@@@cat", currentPage);
 
   const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
@@ -63,6 +76,15 @@ export default function Products() {
               </button>
             ))}
           </div>
+          <select
+            onChange={handleSortChange}
+            value={sortOrder}
+            className="px-4 py-2 border rounded-md text-teal-600 bg-white"
+          >
+            <option value="default">Sort by</option>
+            <option value="lowToHigh">Price: Low to High</option>
+            <option value="highToLow">Price: High to Low</option>
+          </select>
         </div>
 
         {/* Loading State */}
@@ -71,7 +93,7 @@ export default function Products() {
         ) : (
           <>
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {products.map((product) => (
+              {sortedProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -99,6 +121,7 @@ export default function Products() {
           </>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

@@ -82,7 +82,6 @@ const productSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        console.log("TCL: action.payload", action.payload);
       });
   },
 });

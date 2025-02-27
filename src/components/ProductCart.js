@@ -6,6 +6,7 @@ export default function Products({ product }) {
   const Router = useRouter();
   const [showReviewsModal, setShowReviewsModal] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(product.price);
 
   const closeModal = () => {
     setShowModal(false);
@@ -29,15 +30,25 @@ export default function Products({ product }) {
   };
 
   const increaseQuantity = () => {
-    if (quantity < 20) {
-      setQuantity(quantity + 1);
-    }
+    setQuantity((prev) => {
+      if (prev < 20) {
+        const newQuantity = prev + 1;
+        setTotalPrice(newQuantity * product.price);
+        return newQuantity;
+      }
+      return prev;
+    });
   };
 
   const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
+    setQuantity((prev) => {
+      if (prev > 1) {
+        const newQuantity = prev - 1;
+        setTotalPrice(newQuantity * product.price);
+        return newQuantity;
+      }
+      return prev;
+    });
   };
 
   const openReviewsModal = () => {
@@ -67,7 +78,7 @@ export default function Products({ product }) {
 
       {showModal && (
         <div className="fixed text-black top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
-          <div className="relative bg-white text-green-600 p-6 rounded-lg shadow-lg w-[500px] h-[660px]">
+          <div className="relative bg-white text-green-600 p-6 rounded-lg shadow-lg w-[500px] h-[700px]">
             <button
               className="absolute top-2 right-2 bg-teal-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors"
               onClick={closeModal}
@@ -121,7 +132,14 @@ export default function Products({ product }) {
                 Height: {product.dimensions.height}
               </div>
               <div className="text-black text-xs">
-                Weight: {product.dimensions.width}
+                Width: {product.dimensions.width}
+              </div>
+
+              <div className="text-green-600 font-bold mt-2">
+                Price Per Unit: Rs {product.price}
+              </div>
+              <div className="text-red-600 font-bold text-lg mt-2">
+                Total Price: Rs {totalPrice.toFixed(2)}
               </div>
               <button
                 className="mt-2 w-full bg-gray-300 text-black px-1 py-1 rounded hover:bg-gray-400"
@@ -129,9 +147,6 @@ export default function Products({ product }) {
               >
                 Go to Reviews
               </button>
-              <div className="text-green-600 font-bold mt-2">
-                Price: Rs {product.price}
-              </div>
             </div>
 
             <button

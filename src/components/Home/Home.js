@@ -1,4 +1,4 @@
-import Category from "../../pages/category";
+import Category from "../../pages/category/category";
 import Header from "../header";
 import Footer from "@/components/footer";
 import Banner from "./banner";

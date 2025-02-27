@@ -29,8 +29,6 @@ export default function SignUp() {
         const { firstName, email, username, accessToken, refreshToken } =
           response.data;
 
-        console.log("User Data:", response.data);
-
         localStorage.setItem("token", accessToken);
         localStorage.setItem(
           "user",

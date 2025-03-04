@@ -13,7 +13,7 @@ export default function Header() {
   const categories = useSelector((state) => state.products.categories) || [];
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  //placeholder interval changingg
+  //placeholder interval changinggggg
   useEffect(() => {
     dispatch(fetchCategories());
 

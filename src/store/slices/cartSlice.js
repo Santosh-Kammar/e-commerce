@@ -1,4 +1,3 @@
-"use Client";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -11,22 +10,31 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const existingItem = state.cartItems.find(
-        (item) => item.productId === action.payload.productId
+        (item) => item.id === action.payload.id
       );
       if (existingItem) {
         existingItem.quantity += action.payload.quantity;
       } else {
-        state.cartItems.push({ ...action.payload, quantity: 1 });
+        state.cartItems.push({
+          ...action.payload,
+          quantity: action.payload.quantity,
+        });
       }
     },
-
+    updateQuantity: (state, action) => {
+      const { productId, quantity } = action.payload;
+      const item = state.cartItems.find((item) => item.id === productId);
+      if (item) {
+        item.quantity = quantity;
+      }
+    },
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter(
-        (item) => item.productId !== action.payload
+        (item) => item.id !== action.payload
       );
     },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, updateQuantity, removeFromCart } = cartSlice.actions;
 export default cartSlice.reducer;

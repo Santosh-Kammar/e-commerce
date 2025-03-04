@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/store/slices/cartSlice";
+import { toast } from "react-toastify";
 
 export default function Products({ product }) {
   const [showModal, setShowModal] = useState(false);
-  const Router = useRouter();
   const [showReviewsModal, setShowReviewsModal] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(product.price);
+  const [cart, setCart] = useState([]);
+  const Router = useRouter();
+  const dispatch = useDispatch();
 
-  const closeModal = () => {
-    setShowModal(false);
-  };
-  const openModal = () => {
-    setShowModal(true);
-  };
+  const closeModal = () => setShowModal(false);
+  const openModal = () => setShowModal(true);
+  const openReviewsModal = () => setShowReviewsModal(true);
+  const closeReviewsModal = () => setShowReviewsModal(false);
 
   const handleBuyClick = () => {
     Router.push({
@@ -51,12 +54,61 @@ export default function Products({ product }) {
     });
   };
 
-  const openReviewsModal = () => {
-    setShowReviewsModal(true);
-  };
+  const handleAddToCart = (event) => {
+    event.stopPropagation();
 
-  const closeReviewsModal = () => {
-    setShowReviewsModal(false);
+    const isItemInCart = cart.some((item) => item.id === product.sku);
+    if (isItemInCart) {
+      toast.info(`${product.title} is already in the cart!`, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: { backgroundColor: "#D1D5DB", color: "#374151" },
+      });
+      return;
+    }
+
+    const cartItem = {
+      id: product.sku,
+      title: product.title,
+      price: product.price,
+      quantity: quantity,
+      thumbnail: product.thumbnail,
+    };
+
+    dispatch(addToCart(cartItem));
+
+    setCart((prevCart) => {
+      const existingItemIndex = prevCart.findIndex(
+        (item) => item.id === product.sku
+      );
+      let updatedCart;
+
+      if (existingItemIndex !== -1) {
+        updatedCart = prevCart.map((item, index) =>
+          index === existingItemIndex
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      } else {
+        updatedCart = [...prevCart, cartItem];
+      }
+
+      return updatedCart;
+    });
+
+    toast.success(`${product.title} added to cart!`, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      style: { backgroundColor: "#D1D5DB", color: "#374151" },
+    });
   };
 
   return (
@@ -71,7 +123,10 @@ export default function Products({ product }) {
         <h2 className="mt-4 text-xl text-black">{product.title}</h2>
         <p className="text-lg text-teal-600 mt-2">Rs {product.price}</p>
 
-        <button className="mt-4 bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition-colors duration-300">
+        <button
+          className="mt-4 bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition-colors duration-300"
+          onClick={handleAddToCart}
+        >
           Add to Cart
         </button>
       </div>
@@ -86,7 +141,7 @@ export default function Products({ product }) {
               Cancel
             </button>
 
-            <h2 className="text-xl text-green-600 font-bold mt-5">
+            <h2 className="text-xl text-teal-600 font-bold mt-5">
               {product.title}
             </h2>
 
@@ -97,16 +152,16 @@ export default function Products({ product }) {
             />
 
             <div className="flex items-center justify-end mt-4">
-              <span className="mr-2 text-black">quantity : </span>
+              <span className="mr-2 text-black">Quantity:</span>
               <button
-                className="bg-gray-300 px-3 py-1/2 rounded text-black hover:bg-gray-400"
+                className="bg-gray-300 px-3 py-1 rounded text-black hover:bg-gray-400"
                 onClick={decreaseQuantity}
               >
                 -
               </button>
               <span className="px-3 text-xl font-semibold">{quantity}</span>
               <button
-                className="bg-gray-300 px-3 py-1/2 rounded text-black hover:bg-gray-400"
+                className="bg-gray-300 px-3 py-1 rounded text-black hover:bg-gray-400"
                 onClick={increaseQuantity}
               >
                 +
@@ -114,11 +169,12 @@ export default function Products({ product }) {
             </div>
 
             <div className="text-black">
-              <div className="mt-1 text-green-600 font-semibold font text-[16px]">
-                Description :
+              <div className="mt-1 text-green-600 font-semibold text-[16px]">
+                Description:
               </div>
               {product.description}
             </div>
+
             <div className="mt-1 text-[14px]">
               <strong>Details:</strong>
               <div className="text-black text-xs">SKU: {product.sku}</div>
@@ -141,6 +197,7 @@ export default function Products({ product }) {
               <div className="text-red-600 font-bold text-lg mt-2">
                 Total Price: Rs {totalPrice.toFixed(2)}
               </div>
+
               <button
                 className="mt-2 w-full bg-gray-300 text-black px-1 py-1 rounded hover:bg-gray-400"
                 onClick={openReviewsModal}
@@ -187,9 +244,6 @@ export default function Products({ product }) {
                       Rating: {review.rating} ⭐
                     </p>
                     <p className="text-gray-700">{review.comment}</p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(review.date).toLocaleDateString()}
-                    </p>
                   </div>
                 ))}
               </div>

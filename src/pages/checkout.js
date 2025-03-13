@@ -58,7 +58,7 @@ export default function Checkout() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10 relative">
-      <h2 className="text-2xl font-bold mb-4 text-green-600">Checkout</h2>
+      <h2 className="text-2xl font-bold mb-4 text-teal-500">Checkout</h2>
       <button
         className="absolute top-4 right-4 bg-teal-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors "
         onClick={closeModal}
@@ -66,21 +66,21 @@ export default function Checkout() {
         Cancel
       </button>
 
-      <div className="flex items-center gap-4">
+      <div className="flex  items-center gap-4">
         <img
           src={query.thumbnail}
           alt={query.title}
           className="w-24 h-24 rounded-lg"
         />
         <div>
-          <h3 className="text-xl font-semibold text-black">{query.title}</h3>
+          <h3 className="text-xl font-semibold text-gray-700">{query.title}</h3>
           <p className="text-gray-700">Brand: {query.brand}</p>
           <p className="text-green-600 font-bold">Price: Rs {query.price}</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <label className="block font-semibold text-black mt-3">
+        <label className="block font-semibold text-gray-700 mt-3">
           Full Name :
         </label>
         <input
@@ -92,7 +92,7 @@ export default function Checkout() {
           className="w-full p-2 border rounded mt-1 text-black"
         />
 
-        <label className="block font-semibold text-gray-700 mt-3 text-black">
+        <label className="block font-semibold text-gray-700 mt-3 ">
           E-mail :
         </label>
         <input
@@ -108,7 +108,9 @@ export default function Checkout() {
           <p className="text-red-500 text-sm mt-1">{emailError}</p>
         )}
 
-        <label className="block font-semibold text-black mt-3">Address :</label>
+        <label className="block font-semibold text-gray-700 mt-3">
+          Address :
+        </label>
         <input
           type="text"
           name="address"
@@ -118,7 +120,7 @@ export default function Checkout() {
           className="w-full p-2 border rounded mt-1 text-black"
         />
 
-        <label className="block font-semibold text-black mt-3">
+        <label className="block font-semibold text-gray-700 mt-3">
           Payment Method
         </label>
         <select

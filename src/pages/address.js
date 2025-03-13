@@ -64,7 +64,7 @@ export default function Address({ product }) {
   return (
     <div className="bg-opacity-50">
       <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10 w-[500px] h-[600px] relative">
-        <h2 className="text-2xl font-bold text-green-600 mb-4">
+        <h2 className="text-2xl font-bold text-teal-500 mb-4">
           Shipping address
         </h2>
 

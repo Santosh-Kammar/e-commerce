@@ -9,11 +9,13 @@ export default function Header() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const placeholders = ["product", "city", "place"];
 
+  const [isDropdownOpen, setIsDropDownOpen] = useState(false);
+
   const cartItems = useSelector((state) => state.cart.cartItems) || [];
   const categories = useSelector((state) => state.products.categories) || [];
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  //placeholder interval changinggggg
+  //placeholder interval changing
   useEffect(() => {
     dispatch(fetchCategories());
 
@@ -99,21 +101,47 @@ export default function Header() {
 
       {/* mobile navigation */}
       {isMenuOpen && (
-        <div className="sm:hidden bg-white shadow-lg mt-4 p-4 flex flex-col items-end pr-4">
-          <a href="/products" className="text-black hover:text-teal-600">
+        <div className="sm:hidden bg-gray-200  mt-4 p-4 flex justify-between  items-center pr-4">
+          <a
+            href="/products"
+            className="text-gray-600 text-[20px] hover:text-teal-600"
+          >
             Products
           </a>
-          <a href="/cart" className="block text-black hover:text-teal-600 ml-4">
+          <div
+            className="absolute top-full left-0 invisible group-hover:visible bg-white shadow-lg rounded-lg w-48 z-10 
+                         opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-gray-300 max-h-60 overflow-y-auto 
+                         pointer-events-none group-hover:pointer-events-auto"
+          >
+            {categories.length > 0 ? (
+              categories.map((category) => (
+                <a
+                  key={category.id}
+                  href={`/category/${category.slug}`}
+                  className="block px-4 py-2 text-black hover:text-teal-600"
+                >
+                  {category.name}
+                </a>
+              ))
+            ) : (
+              <p className="px-4 py-2 text-gray-500">Loading...</p>
+            )}
+          </div>
+
+          <a
+            href="/cart"
+            className="block text-gray-600 text-[20px]  hover:text-teal-600 ml-4"
+          >
             Cart
-            {cartItemCount > 0 && (
+            {totalItems > 0 && (
               <span className="absolute -top-2 -right-3  text-white text-xs font-bold px-2 py-1 rounded-full">
-                {cartItemCount}
+                {totalItems}
               </span>
             )}
           </a>
           <a
             href="/login"
-            className="block text-black hover:text-teal-600 ml-8"
+            className="block text-gray-600 text-[20px]  hover:text-teal-600 ml-8"
           >
             Login
           </a>

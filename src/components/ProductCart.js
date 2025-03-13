@@ -220,7 +220,7 @@ export default function Products({ product }) {
         <div className="fixed text-black top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
           <div className="relative bg-white text-green-600 p-6 rounded-lg shadow-lg w-96">
             <button
-              className="absolute top-2 right-2 bg-green-600 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors"
+              className="absolute top-2 right-2 bg-teal-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors"
               onClick={closeReviewsModal}
             >
               Close
@@ -243,7 +243,14 @@ export default function Products({ product }) {
                     <p className="text-yellow-500">
                       Rating: {review.rating} ⭐
                     </p>
-                    <p className="text-gray-700">{review.comment}</p>
+                    <p className="text-gray-600 ">{review.comment}</p>
+
+                    <p className=" text-gray-600 mt-1 text-xs">
+                      {review.reviewerEmail}
+                    </p>
+                    <p className=" text-gray-600 mt-1 text-xs">
+                      {new Date(review.date).toLocaleDateString("en-GB")}
+                    </p>
                   </div>
                 ))}
               </div>

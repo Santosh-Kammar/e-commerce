@@ -4,6 +4,8 @@ import { store, persistor } from "@/store";
 import "../styles/globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "../styles/cart.css";
+import "../styles/products.css";
 
 function MyApp({ Component, pageProps }) {
   return (
